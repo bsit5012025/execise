@@ -17,14 +17,14 @@ public class ItemDaoImpl implements ItemDao {
     public Item findItemById(String id) {
         Item item = null;
 
-        try (Connection con = ConnectionHelper.getConnection()){
+        try (Connection con = ConnectionHelper.getConnection()) {
 
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM ITEM WHERE ID = ?");
             stmt.setString(1, id);
 
             ResultSet rs = stmt.executeQuery();
 
-            if(rs.next()) {
+            if (rs.next()) {
                 item = new Item();
                 item.setId(rs.getString("id"));
                 item.setTitle(rs.getString("title"));
@@ -47,7 +47,7 @@ public class ItemDaoImpl implements ItemDao {
             PreparedStatement stmt = con.prepareStatement("SELECT * FROM ITEM");
             ResultSet rs = stmt.executeQuery();
 
-            while(rs.next()) {
+            while (rs.next()) {
                 Item item = new Item();
                 item.setId(rs.getString("id"));
                 item.setTitle(rs.getString("title"));
@@ -78,13 +78,38 @@ public class ItemDaoImpl implements ItemDao {
         }
     }
 
+
     @Override
     public boolean updateItem(Item item) {
-        return false;
+        try (Connection con = ConnectionHelper.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement("UPDATE ITEM SET (ID, TITLE, GENRE, COPIES) VALUES (?, ?, ?, ?)");
+            stmt.setString(1, item.getId());
+            stmt.setString(2, item.getTitle());
+            stmt.setString(3, item.getGenre());
+            stmt.setInt(4, item.getCopies());
+            stmt.executeUpdate();
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("An SQL Exception occured." + e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public int deleteItem(String id) {
-        return 0;
+        try (Connection con = ConnectionHelper.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM ITEM WHERE (ID) VALUES (?)");
+            stmt.setString(1, id.getId());
+            stmt.setString(2, item.getTitle());
+            stmt.setString(3, item.getGenre());
+            stmt.setInt(4, item.getCopies());
+            stmt.executeUpdate();
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("An SQL Exception occured." + e.getMessage());
+            return 0;
+        }
     }
 }
