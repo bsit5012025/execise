@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -84,6 +85,57 @@ class ItemDaoImplTest {
         verify(preparedStatement, times(1)).executeUpdate();
         assertTrue(result);
     }
+
+    @Test
+    void findAllShouldReturnAtLeastOneItem() throws SQLException {
+
+        when(resultSet.getString("id")).thenReturn("1");
+        when(resultSet.getString("title")).thenReturn("Test Title");
+        when(resultSet.getString("genre")).thenReturn("Test Genre");
+        when(resultSet.getInt("copies")).thenReturn(1);
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
+        when(resultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
+        when(preparedStatement.executeQuery()).thenReturn(resultSet);
+
+        itemDao = new ItemDaoImpl();
+        List<Item> itemList = itemDao.findAll();
+
+        assertNotNull(itemList);
+    }
+
+    @Test
+    public void testUpdateItem() throws SQLException {
+        Item item = new Item();
+        item.setId("2");
+        item.setTitle("NEW Test Title");
+        item.setGenre("NEW Test Genre");
+        item.setCopies(2);
+
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ItemDao itemDao = new ItemDaoImpl();
+        boolean result = itemDao.updateItem(item);
+
+        verify(connection, times(1)).prepareStatement(anyString());
+        verify(preparedStatement, times(3)).setString(anyInt(), anyString());
+        verify(preparedStatement, times(1)).setInt(anyInt(), anyInt());
+        verify(preparedStatement, times(1)).executeUpdate();
+        assertTrue(result);
+    }
+
+    @Test
+    void deleteItemShouldReturnOne() throws SQLException{
+        when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
+        when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ItemDao itemDao = new ItemDaoImpl();
+        int result = itemDao.deleteItem("2");
+
+        assertEquals(1, result);
+    }
+
+
 
 
 }
