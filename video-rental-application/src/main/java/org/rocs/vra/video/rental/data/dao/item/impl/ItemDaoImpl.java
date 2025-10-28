@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class ItemDaoImpl implements ItemDao {
 
@@ -80,11 +81,37 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public boolean updateItem(Item item) {
-        return false;
+        try (Connection con = ConnectionHelper.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement("UPDATE ITEM  SET TITLE = ?, GENRE = ?, COPIES = ? WHERE ID = ?");
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Enter New Title: ");
+            String title = scanner.nextLine();
+            stmt.setString(1, title);
+            System.out.println("Enter New Genre: ");
+            String genre = scanner.nextLine();
+            stmt.setString(2, genre);
+            System.out.println("Enter Copies: ");
+            int copies = scanner.nextInt();
+            stmt.setInt(3, copies);
+            stmt.setString(4, item.getId());
+            stmt.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println("An SQL Exception occurred." + e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public int deleteItem(String id) {
-        return 0;
+        try (Connection con = ConnectionHelper.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM ITEM WHERE ID = ?");
+            stmt.setString(1, id);
+            stmt.executeUpdate();
+            return 1;
+        } catch (SQLException e) {
+            System.out.println("An SQL Exception occurred." + e.getMessage());
+            return 0;
+        }
     }
 }
