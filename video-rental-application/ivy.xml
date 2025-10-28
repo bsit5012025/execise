@@ -1,0 +1,31 @@
+<ivy-module version="2.0"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
+
+    <info
+            organisation="org.rocs"
+            module="vra"
+            revision="1.0"
+            status="integration">
+    </info>
+
+    <configurations defaultconfmapping="compile->default">
+        <conf name="compile" description="Required to compile application"/>
+        <conf name="runtime" description="Additional run-time dependencies" extends="compile"/>
+        <conf name="test"    description="Required for test only" extends="runtime"/>
+    </configurations>
+
+    <dependencies>
+        <!--Database connectivity-->
+        <dependency org="com.oracle.database.jdbc" name="ojdbc11" rev="23.9.0.25.07"/>
+
+        <!--String Utilities-->
+        <dependency org="org.apache.commons" name="commons-lang3" rev="3.19.0"/>
+
+        <!--Unit Testing -->
+<!--        <dependency org="org.junit.jupiter" name="junit-jupiter-api" rev="6.0.0"/>-->
+        <dependency org="org.junit.jupiter" name="junit-jupiter-api" rev="5.14.0"/>
+        <dependency org="org.mockito" name="mockito-core" rev="5.20.0"/>
+    </dependencies>
+
+</ivy-module>
