@@ -80,7 +80,19 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public boolean updateItem(Item item) {
-        return false;
+        try(Connection con = CommectionHelper.getConnection())
+        {
+            PreparedStatement stmt = con.prepareStatement("UPDATE ITEM SET TITLE=?, GENRE=?, COPIES=? WHERE ID=?");
+            stmt.setString(1, "some1");
+            stmt.setString(2, "some3");
+            stmt.setString(3, "some2");
+        }
+        catch (SQLException e)
+        {
+            System.out.println("An Exception occured "+ e.getMessage);
+            return false;
+        }
+
     }
 
     @Override
