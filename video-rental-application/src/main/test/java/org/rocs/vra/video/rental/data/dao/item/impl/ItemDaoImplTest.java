@@ -85,5 +85,25 @@ class ItemDaoImplTest {
         assertTrue(result);
     }
 
+    @Test
+    public void testUpdateItem throws SQLException {
+        Item item = new Item();
+        item.setId("2");
+        item.setTitle("Test Title");
+        item.setGenre("Test Genre");
+        item.setCopies(2);
+
+            when(connection.prepareStatement(any(String.class))).thenReturn(preparedStatement);
+            when(preparedStatement.executeUpdate()).thenReturn(1);
+
+        ItemDao itemDao = new ItemDaoImpl();
+        boolean result = itemDao.updateItem(item);
+
+        verify(connection, times(1)).prepareStatement(anyString());
+        verify(preparedStatement, times(1)).setString(anyInt(), anyString());
+        verify(preparedStatement, times(1)).setInt(anyInt(), anyInt());
+        verify(preparedStatement, times(1)).executeUpdate();
+        assertTrue(result);
+    }
 
 }

@@ -80,11 +80,30 @@ public class ItemDaoImpl implements ItemDao {
 
     @Override
     public boolean updateItem(Item item) {
+        try (Connection con = ConnectionHelper.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement("UPDATE ITEM SET TITLE = ?, GENRE = ?, COPIES = ? WHERE ID = ?");
+            stmt.setString(1, item.getTitle());
+            stmt.setString(2, item.getGenre());
+            stmt.setInt(3, item.getCopies());
+            stmt.setString(1, item.getId());
+        }
+        catch (SQLException e) {
+            System.out.println("An SQL Exception occurred. " + e.getMessage());
+        }
         return false;
     }
 
+
     @Override
     public int deleteItem(String id) {
+        try (Connection con = ConnectionHelper.getConnection()) {
+            PreparedStatement stmt = con.prepareStatement("DELETE FROM ITEM WHERE ID = ?");
+            stmt.setString(1, id);
+            return stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("An SQL Exception occurred." + e.getMessage());
+        }
         return 0;
     }
 }
